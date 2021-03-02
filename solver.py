@@ -1,14 +1,16 @@
+import random
+counter = 0
 # Test Sudoku to be solved using this algorithm.
 sudoku = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 6, 5, 0, 8, 4, 0, 0],
+    [5, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 8, 0, 0, 0, 0, 0, 3, 1],
+    [0, 0, 0, 0, 1, 0, 0, 8, 0],
+    [9, 0, 0, 0, 0, 0, 0, 0, 5],
+    [0, 5, 0, 0, 9, 0, 6, 0, 0],
+    [0, 0, 0, 0, 0, 0, 2, 5, 0],
+    [0, 0, 0, 0, 0, 0, 0, 7, 4],
+    [0, 0, 0, 0, 0, 0, 3, 0, 0]
 ]
 
 
@@ -80,9 +82,11 @@ def indexGrid(sud):
     return l
 
 
-def solve_sudoku(sud):
+def solve_sudoku(sud, count=1):
+    global counter
     l = [x[:] for x in sud]
     if isCompleted(l):
+        counter += 1
         return l
     indexes = indexGrid(l)
     for x in indexes:
@@ -91,19 +95,21 @@ def solve_sudoku(sud):
             s = getElements(l, i, j)
             if len(s) == 0:
                 return []
-            print('Position :', i, j, 'Set :', s, 'Grid : ')
-            printGrid(l)
-            for element in s:
-                print('checking', element, 'of', s)
-                l[i][j] = element
+            s = list(s)
+            while len(s):
+                rand = random.randint(0, len(s)-1)
+                print('checking', s[rand], 'of', s, counter)
+                l[i][j] = s[rand]
                 sol = solve_sudoku(l)
-                if len(sol):
+                if counter == count and len(sol):
                     return sol
+                s.pop(rand)
             return []
 
 
 if __name__ == "__main__":
     printGrid(solve_sudoku(sudoku))
+    print(counter)
     # for i in range(0, 9):
     #     for j in range(0, 9):
     #         if sudoku[i][j] == 0:
