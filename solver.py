@@ -99,7 +99,6 @@ def solve_sudoku(sud, counter, count=1):
             s = list(s)
             while len(s):
                 rand = random.randint(0, len(s)-1)
-                print('checking', s[rand], 'of', s, counter[0])
                 l[i][j] = s[rand]
                 sol = solve_sudoku(l, counter, count)
                 if counter[0] == count:
@@ -110,7 +109,7 @@ def solve_sudoku(sud, counter, count=1):
 
 if __name__ == "__main__":
     lst = [0]
-    solve_sudoku(sudoku, lst, 2)
+    solve_sudoku(sudoku, lst, 1)
     print(lst)
     # for i in range(0, 9):
     #     for j in range(0, 9):
