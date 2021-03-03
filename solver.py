@@ -1,16 +1,15 @@
 import random
-counter = 0
 # Test Sudoku to be solved using this algorithm.
 sudoku = [
-    [0, 0, 6, 5, 0, 8, 4, 0, 0],
-    [5, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 8, 0, 0, 0, 0, 0, 3, 1],
-    [0, 0, 0, 0, 1, 0, 0, 8, 0],
-    [9, 0, 0, 0, 0, 0, 0, 0, 5],
+    [3, 0, 6, 5, 0, 8, 4, 0, 0],
+    [5, 2, 0, 0, 0, 0, 0, 0, 0],
+    [0, 8, 7, 0, 0, 0, 0, 3, 1],
+    [0, 0, 3, 0, 1, 0, 0, 8, 0],
+    [9, 0, 0, 8, 6, 3, 0, 0, 5],
     [0, 5, 0, 0, 9, 0, 6, 0, 0],
-    [0, 0, 0, 0, 0, 0, 2, 5, 0],
+    [1, 3, 0, 0, 0, 0, 2, 5, 0],
     [0, 0, 0, 0, 0, 0, 0, 7, 4],
-    [0, 0, 0, 0, 0, 0, 3, 0, 0]
+    [0, 0, 5, 2, 0, 6, 3, 0, 0]
 ]
 
 
@@ -73,22 +72,24 @@ def printGrid(sud):
         print()
 
 
-def indexGrid(sud):
+def indexGrid(sud, empty):
     l = []
     for i in range(0, 9):
         for j in range(0, 9):
-            if sud[i][j] == 0:
+            if sud[i][j] == 0 and empty:
+                l.append((i, j))
+            elif sud[i][j] != 0 and not empty:
                 l.append((i, j))
     return l
 
 
-def solve_sudoku(sud, count=1):
-    global counter
+def solve_sudoku(sud, counter, count=1):
     l = [x[:] for x in sud]
     if isCompleted(l):
-        counter += 1
+        counter[0] += 1
+        counter.append(l)
         return l
-    indexes = indexGrid(l)
+    indexes = indexGrid(l, True)
     for x in indexes:
         (i, j) = x
         if l[i][j] == 0:
@@ -98,18 +99,19 @@ def solve_sudoku(sud, count=1):
             s = list(s)
             while len(s):
                 rand = random.randint(0, len(s)-1)
-                print('checking', s[rand], 'of', s, counter)
+                print('checking', s[rand], 'of', s, counter[0])
                 l[i][j] = s[rand]
-                sol = solve_sudoku(l)
-                if counter == count and len(sol):
-                    return sol
+                sol = solve_sudoku(l, counter, count)
+                if counter[0] == count:
+                    return counter
                 s.pop(rand)
             return []
 
 
 if __name__ == "__main__":
-    printGrid(solve_sudoku(sudoku))
-    print(counter)
+    lst = [0]
+    solve_sudoku(sudoku, lst, 2)
+    print(lst)
     # for i in range(0, 9):
     #     for j in range(0, 9):
     #         if sudoku[i][j] == 0:
