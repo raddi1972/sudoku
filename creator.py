@@ -34,12 +34,8 @@ def createGrid():
     # solver.printGrid(lst)
     l = [0]
     solver.solve_sudoku(lst, l)
-    n = 5
+    n = 21
     sudoku = removeElements(l[1], n)
     f = [0]
     solver.solve_sudoku(sudoku, f, 2)
-    solver.printGrid(sudoku)
-
-
-if __name__ == "__main__":
-    createGrid()
+    return sudoku
