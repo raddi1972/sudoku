@@ -72,39 +72,28 @@ def printGrid(sud):
         print()
 
 
-def indexGrid(sud, empty):
-    l = []
-    for i in range(0, 9):
-        for j in range(0, 9):
-            if sud[i][j] == 0 and empty:
-                l.append((i, j))
-            elif sud[i][j] != 0 and not empty:
-                l.append((i, j))
-    return l
-
-
 def solve_sudoku(sud, counter, count=1):
     l = [x[:] for x in sud]
     if isCompleted(l):
         counter[0] += 1
         counter.append(l)
         return l
-    indexes = indexGrid(l, True)
+    indexes = [(i, j) for i in range(0, 9)
+               for j in range(0, 9) if l[i][j] == 0]
     for x in indexes:
         (i, j) = x
-        if l[i][j] == 0:
-            s = getElements(l, i, j)
-            if len(s) == 0:
-                return []
-            s = list(s)
-            while len(s):
-                rand = random.randint(0, len(s)-1)
-                l[i][j] = s[rand]
-                sol = solve_sudoku(l, counter, count)
-                if counter[0] == count:
-                    return counter
-                s.pop(rand)
+        s = getElements(l, i, j)
+        if len(s) == 0:
             return []
+        s = list(s)
+        while len(s):
+            rand = random.randint(0, len(s)-1)
+            l[i][j] = s[rand]
+            sol = solve_sudoku(l, counter, count)
+            if counter[0] == count:
+                return counter
+            s.pop(rand)
+        return []
 
 
 if __name__ == "__main__":
