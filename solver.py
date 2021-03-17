@@ -1,17 +1,19 @@
 import random
 import functools as fun
 # Test Sudoku to be solved using this algorithm.
-sudoku = [
-    [3, 0, 6, 5, 0, 8, 4, 0, 0],
-    [5, 2, 0, 0, 0, 0, 0, 0, 0],
-    [0, 8, 7, 0, 0, 0, 0, 3, 1],
-    [0, 0, 3, 0, 1, 0, 0, 8, 0],
-    [9, 0, 0, 8, 6, 3, 0, 0, 5],
-    [0, 5, 0, 0, 9, 0, 6, 0, 0],
-    [1, 3, 0, 0, 0, 0, 2, 5, 0],
-    [0, 0, 0, 0, 0, 0, 0, 7, 4],
-    [0, 0, 5, 2, 0, 6, 3, 0, 0]
-]
+# sudoku = [
+#     [3, 0, 6, 5, 0, 8, 4, 0, 0],
+#     [5, 2, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 8, 7, 0, 0, 0, 0, 3, 1],
+#     [0, 0, 3, 0, 1, 0, 0, 8, 0],
+#     [9, 0, 0, 8, 6, 3, 0, 0, 5],
+#     [0, 5, 0, 0, 9, 0, 6, 0, 0],
+#     [1, 3, 0, 0, 0, 0, 2, 5, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 7, 4],
+#     [0, 0, 5, 2, 0, 6, 3, 0, 0]
+# ]
+
+cache = []
 
 
 def getBlock(sud, i, j):
@@ -63,9 +65,11 @@ def isCompleted(sud):
     return True
 
 
-def pcheck_sudoku(sud, counter):
-    l = [x[:] for x in sud]
-    return check_sudoku(l, counter)
+def pcheck_sudoku(sud):
+    cache = [x[:] for x in sud]
+    counter = [0]
+    check_sudoku(sud, counter)
+    return counter
 
 
 def solve_sudoku(sud):
@@ -75,8 +79,7 @@ def solve_sudoku(sud):
         return sud
     for x in indexes:
         (i, j) = x
-        s = getElements(sud, i, j)
-        s = list(s)
+        s = list(getElements(sud, i, j))
         while len(s):
             rand = random.randint(0, len(s)-1)
             sud[i][j] = s[rand]
@@ -90,29 +93,36 @@ def solve_sudoku(sud):
 def check_sudoku(sud, counter):
     indexes = [(i, j) for i in range(0, 9)
                for j in range(0, 9) if sud[i][j] == 0]
+    for i in sud:
+        for j in i:
+            if sud[i][j] == cache[i][j]:
+                temp = sud[i][j]
+                if temp == 0:
+                    indexes.remove((i, j))
+            else:
+                break
     if len(indexes) == 0:
-        if isCompleted(sud):
-            counter[0] += 1
-            counter.append([x[:] for x in sud])
-            return counter
+        counter[0] += 1
+        counter.append([x[:] for x in sud])
+        return counter
     for x in indexes:
         (i, j) = x
         elements = getElements(sud, i, j)
         if len(elements) == 0:
-            return []
+            return
         elements = list(elements)
         for s in elements:
             sud[i][j] = s
-            sol = check_sudoku(sud, counter)
+            check_sudoku(sud, counter)
             if counter[0] == 2:
                 return counter
         sud[i][j] = 0
-        return []
+        return
 
 
 if __name__ == "__main__":
     lst = [0]
-    pcheck_sudoku(sudoku, lst, 1)
+    # pcheck_sudoku(sudoku, lst, 1)
     print(lst)
     # for i in range(0, 9):
     #     for j in range(0, 9):
