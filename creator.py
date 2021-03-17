@@ -15,10 +15,9 @@ class Sudoku:
         self.grid[i][j] = val
         l = [0]
         self.solution = solver.solve_sudoku(self.grid)
-        print(self.solution)
-        self.removeElements()
+        self.removeElements(21)
 
-    def removeElements(self):
+    def removeElements(self, tries):
         l = [x[:] for x in self.grid]
         index = [(i, j) for i in range(0, 9)
                  for j in range(0, 9) if l[i][j] != 0]
@@ -28,10 +27,14 @@ class Sudoku:
             temp = l[i][j]
             l[i][j] = 0
             sol = solver.pcheck_sudoku(l)
-            print(sol)
+            print(l)
+            print(tries)
             index.pop(rand)
             if sol[0] == 2:
+                tries -= 1
                 l[i][j] = temp
+            if(tries == 0):
+                break
         self.grid = l
 
     def __str__(self):

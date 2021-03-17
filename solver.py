@@ -13,8 +13,6 @@ import functools as fun
 #     [0, 0, 5, 2, 0, 6, 3, 0, 0]
 # ]
 
-cache = []
-
 
 def getBlock(sud, i, j):
     block = 0
@@ -66,9 +64,9 @@ def isCompleted(sud):
 
 
 def pcheck_sudoku(sud):
-    cache = [x[:] for x in sud]
+    l = [x[:] for x in sud]
     counter = [0]
-    check_sudoku(sud, counter)
+    check_sudoku(l, counter)
     return counter
 
 
@@ -93,14 +91,6 @@ def solve_sudoku(sud):
 def check_sudoku(sud, counter):
     indexes = [(i, j) for i in range(0, 9)
                for j in range(0, 9) if sud[i][j] == 0]
-    for i in sud:
-        for j in i:
-            if sud[i][j] == cache[i][j]:
-                temp = sud[i][j]
-                if temp == 0:
-                    indexes.remove((i, j))
-            else:
-                break
     if len(indexes) == 0:
         counter[0] += 1
         counter.append([x[:] for x in sud])
@@ -108,8 +98,6 @@ def check_sudoku(sud, counter):
     for x in indexes:
         (i, j) = x
         elements = getElements(sud, i, j)
-        if len(elements) == 0:
-            return
         elements = list(elements)
         for s in elements:
             sud[i][j] = s
